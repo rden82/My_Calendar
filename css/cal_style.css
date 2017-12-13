@@ -1,0 +1,35 @@
+body {
+    padding: 50px;
+}
+
+div {
+    display: inline-block;
+}
+table {
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+#Month {
+    background: azure;
+}
+
+.weekday {
+    background: gray;
+    color: black;
+}
+
+td {
+    padding: 5px;
+    border: 4px groove lightgray;
+    text-align: center;
+}
+td:hover {
+    background: lime;
+    cursor: pointer;
+}
+
+th {
+    padding: 10px;
+    border: 4px groove  #555555;
+    cursor: default;
+}
