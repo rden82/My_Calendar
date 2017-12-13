@@ -2,8 +2,10 @@ body {
     padding: 50px;
 }
 
-div {
+.tab_inside {
     display: inline-block;
+    border: 1px solid gray;
+    vertical-align: middle;
 }
 table {
     border: 2px solid black;
@@ -32,4 +34,13 @@ th {
     padding: 10px;
     border: 4px groove  #555555;
     cursor: default;
+}
+
+.current {
+    font-weight: bolder;
+    color: black;
+}
+.not_current {
+    font-weight: normal;
+    color: gray;
 }

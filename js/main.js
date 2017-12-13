@@ -19,14 +19,8 @@ class BilderTable {
         this.MyCal0 = MyCal_prev;
         this.MyCal1 = MyCal_curr;
     }
-    createTable (){
-
-        let day_table = document.createElement("table");
-        day_table.id = "Month";
-        let Mybody = document.getElementsByClassName("body1")[0];
-        Mybody.appendChild(day_table);
-        let MyTable = "<tr class='weekday'><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr>";
-
+    createTable (index){
+        let day_table = document.getElementsByClassName("table" + index)[0];
         let last_prev = this.MyCal0.last_day;
 
         let first_wday = this.MyCal1.first_wday;
@@ -34,21 +28,26 @@ class BilderTable {
 
         let last_curr = this.MyCal1.last_day;
 
+        let MyTable = "<caption>" + this.MyCal1.day + "." + this.MyCal1.month + "." + this.MyCal1.year + "</caption>";
+
+        MyTable += "<tr class='weekday'><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr>";
+
         let a = 2-first_wday;
         let b = 0;
+
         for (let i = 0; i < 6; i++) {
             MyTable += "<tr>";
             for (let j = 0; j < 7; j++) {
                 if (a < 1) {
                     b = last_prev + a;
-                    MyTable += "<td>" + b + "</td>";
+                    MyTable += "<td class='not_current'>" + b + "</td>";
                     a++;
                 } else if (a > last_curr) {
                     b = a - last_curr;
-                    MyTable += "<td>" + b + "</td>";
+                    MyTable += "<td class='not_current'>" + b + "</td>";
                     a++;
                 } else {
-                    MyTable += "<td>" + a + "</td>";
+                    MyTable += "<td class='current'>" + a + "</td>";
                     a++;
                 }
             }
@@ -56,10 +55,16 @@ class BilderTable {
         }
         day_table.innerHTML = MyTable;
     }
+/*  input_date (tab){
+        //day_table.innerHTML = MyTable;
+    }*/
 }
+function getValue () {
+    let Input_Date = document.getElementById("input_form").value; //let Input_Date = "2024, 09, 17";
+    get(Input_Date);
+}
+function get(Input_Date) {
 
-function getValue() {
-    let Input_Date = document.getElementById("input_form").value;  //let Input_Date = "2024, 09, 17";
     let month_curr;
     let month_prev;
     if (Input_Date !== "") {
@@ -78,9 +83,13 @@ function getValue() {
         let MyCal_prev = new MyCalendar(month_prev);
         let MyCal_curr = new MyCalendar(month_curr);
 
-        let table1 = new BilderTable(MyCal_prev, MyCal_curr);
 
-    table1.createTable();
+
+        //let table1 = new BilderTable(MyCal_prev, MyCal_curr);
+    let tab = new BilderTable(MyCal_prev, MyCal_curr);
+
+          tab.createTable(1);
 }
-
-
+$(document).on('click', 'td', function(e) {
+    alert( "свойство: " + e);     //getValue(this.value);
+});
