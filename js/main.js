@@ -28,7 +28,7 @@ class BilderTable {
 
         let last_curr = this.MyCal1.last_day;
 
-        let MyTable = "<caption>" + this.MyCal1.day + "." + this.MyCal1.month + "." + this.MyCal1.year + "</caption>";
+        let MyTable = "<caption>" + this.MyCal1.day + "." + (this.MyCal1.month + 1) + "." + this.MyCal1.year + "</caption>";
 
         MyTable += "<tr class='weekday'><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr>";
 
@@ -59,37 +59,68 @@ class BilderTable {
         //day_table.innerHTML = MyTable;
     }*/
 }
-function getValue () {
+
+function getValue (step) {
     let Input_Date = document.getElementById("input_form").value; //let Input_Date = "2024, 09, 17";
+    let kk;
+    if (Input_Date === "") {
+        Input_Date = new Date(); //let Input_Date = "2024-09-17";
+        kk=Input_Date.getMonth();
+        if (kk<10) {kk="0"+kk.toString()};
+        Input_Date = Input_Date.getFullYear() + "-" + Input_Date.getMonth() + "-" + Input_Date.getDate();
+        document.getElementById("input_form").value = Input_Date.getFullYear() + "-" + kk + "-" + Input_Date.getDate();
+    }
+
+    if (step !== undefined) {
+        let Arr = Input_Date.split("-");
+        Arr[1] = +Arr[1] + step;
+
+        if (+Arr[1] > 12) {
+            Arr[1] = "01";
+            Arr[0] = +Arr[0] + 1;
+        }
+        if (+Arr[1] < 1) {
+            Arr[1] = 12;
+            Arr[0] = +Arr[0] - 1;
+        }
+        Input_Date = Arr.join("-");
+    }
+    Input_Date = Input_Date.split("-").join(", ");
     get(Input_Date);
+
+    kk=Input_Date.split(", ");
+    if (kk[1] < 10) { kk[1] = "0" + kk[1].toString() };
+    document.getElementById("input_form").value =kk.join("-");
 }
+
 function get(Input_Date) {
 
     let month_curr;
     let month_prev;
-    if (Input_Date !== "") {
-        Input_Date = Input_Date.split("-").join(", ");
-        month_curr = new Date(Input_Date);
-        month_prev = new Date(Input_Date);
-    } else {
-        month_curr = new Date();
-        month_prev = new Date();
-        document.getElementById("input_form").value = month_curr.getFullYear() + "-" + month_curr.getMonth() +
-            "-" + month_curr.getDate();
-    }
 
-        month_prev.setMonth((month_prev.getMonth() - 1));
+    Input_Date = Input_Date.split("-").join(", ");
+    month_curr = new Date(Input_Date);
+    month_prev = new Date(Input_Date);
 
-        let MyCal_prev = new MyCalendar(month_prev);
-        let MyCal_curr = new MyCalendar(month_curr);
+    month_prev.setMonth((month_prev.getMonth() - 1));
 
-
+    let MyCal_prev = new MyCalendar(month_prev);
+    let MyCal_curr = new MyCalendar(month_curr);
 
         //let table1 = new BilderTable(MyCal_prev, MyCal_curr);
     let tab = new BilderTable(MyCal_prev, MyCal_curr);
 
           tab.createTable(1);
 }
+//Click on <td>
 $(document).on('click', 'td', function(e) {
     alert( "свойство: " + e);     //getValue(this.value);
+});
+//Click on <button class="butt_left">
+$('.butt_left').click(function(){
+    getValue(-1);
+});
+//Click on <button class="butt_right">
+$('.butt_right').click(function(){
+    getValue(+1);
 });
