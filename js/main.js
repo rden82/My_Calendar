@@ -55,23 +55,24 @@ class BilderTable {
         }
         day_table.innerHTML = MyTable;
     }
-/*  input_date (tab){
-        //day_table.innerHTML = MyTable;
-    }*/
 }
 
 function getValue (step) {
-    let Input_Date = document.getElementById("input_form").value; //let Input_Date = "2024, 09, 17";
-    let kk;
+    let Input_Date = document.getElementById("input_form").value;
+    let kk, m;
     if (Input_Date === "") {
-        Input_Date = new Date(); //let Input_Date = "2024-09-17";
-        kk=Input_Date.getMonth();
-        if (kk<10) {kk="0"+kk.toString()};
-        Input_Date = Input_Date.getFullYear() + "-" + Input_Date.getMonth() + "-" + Input_Date.getDate();
-        document.getElementById("input_form").value = Input_Date.getFullYear() + "-" + kk + "-" + Input_Date.getDate();
-    }
-
-    if (step !== undefined) {
+        Input_Date = new Date(); //Input_Date = "2024-09-17";
+        kk = Input_Date.getMonth();
+        if ( kk < 10) {kk = "0" + kk.toString()};
+        //console.log(kk);
+        m = Input_Date.getFullYear() + "-" + kk + "-" + Input_Date.getDate();
+        document.getElementById("input_form").value = m;
+        get(m);
+    } else {
+        if (step !== undefined) {
+            step = 0;
+        }
+        console.log(Input_Date);
         let Arr = Input_Date.split("-");
         Arr[1] = +Arr[1] + step;
 
@@ -83,14 +84,17 @@ function getValue (step) {
             Arr[1] = 12;
             Arr[0] = +Arr[0] - 1;
         }
-        Input_Date = Arr.join("-");
-    }
-    Input_Date = Input_Date.split("-").join(", ");
-    get(Input_Date);
 
-    kk=Input_Date.split(", ");
-    if (kk[1] < 10) { kk[1] = "0" + kk[1].toString() };
-    document.getElementById("input_form").value =kk.join("-");
+        Input_Date = Arr.join("-");
+        Input_Date = Input_Date.split("-").join(", ");
+
+        kk = Date(Input_Date.split(", "));
+        if (kk[1] < 10) {
+            kk[1] = "0" + kk[1].toString()
+        }
+        document.getElementById("input_form").value = kk.join("-");
+        get(Input_Date);
+    }
 }
 
 function get(Input_Date) {
