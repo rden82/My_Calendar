@@ -113,14 +113,22 @@ function get(Input_Date) {
           tab.createTable(1);
 }
 //Click on <td>
-$(document).on('click', 'td', function(e) {
-    alert( "свойство: " + e);     //getValue(this.value);
-});
+
+$(() => {
+    getValue();
+    let $table = $('table');
+
+    $table.click(function (event) {
+        console.log($(event.target).text());
+
+    });
 //Click on <button class="butt_left">
-$('.butt_left').click(function(){
-    getValue(-1);
-});
+    $('.butt_left').click(function(){
+        getValue(-1);
+    });
 //Click on <button class="butt_right">
-$('.butt_right').click(function(){
-    getValue(+1);
+    $('.butt_right').click(function(){
+        getValue(+1);
+    });
 });
+
