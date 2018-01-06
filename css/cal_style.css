@@ -1,46 +1,45 @@
 body {
-    padding: 50px;
-}
-
-.tab_inside {
-    display: inline-block;
-    border: 1px solid gray;
-    vertical-align: middle;
-}
-table {
-    border: 2px solid black;
-    border-collapse: collapse;
-}
+    padding: 50px;}
 #Month {
-    background: azure;
-}
-
-.weekday {
+    background: azure;}
+div.wday  {
     background: gray;
-    color: black;
-}
-
-td {
+    color: white;}
+div.wday.weekday  {
+    background: black;
+    color: white;}
+div.cells, div.wday {
+    display: inline-table;
+    width: 30px;
+    flex-wrap: wrap;
     padding: 5px;
     border: 4px groove lightgray;
-    text-align: center;
-}
-td:hover {
-    background: lime;
-    cursor: pointer;
-}
+    text-align: center;}
+div.cells.prev, div.cells.foll {
+    background: lightgrey;
+    color: darkgrey;}
+div.cells.curr {
+    background: azure;
+    font-weight: bold;}
+div.cells.-focus- {
+    background: black;
+    color: white;
+    cursor: pointer}
 
-th {
-    padding: 10px;
-    border: 4px groove  #555555;
-    cursor: default;
-}
-
-.current {
-    font-weight: bolder;
+div.cells.-DateSelect1- {
+    background: greenyellow;
     color: black;
-}
-.not_current {
-    font-weight: normal;
-    color: gray;
-}
+    border-radius: 10px 0 0 10px;}
+div.cells.-DateSelect2- {
+    background: greenyellow !important;
+    color: black ;
+    border-radius: 0 10px 10px 0;}
+div.cells.-select- {
+    background: greenyellow;
+    color: black; }
+div.cells.-focus-select- {
+    background: orange;
+    color: black;}
+div.cells.-focus-select-interval- {
+    background: orange;
+    color: black;}

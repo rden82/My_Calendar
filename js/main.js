@@ -1,95 +1,229 @@
-'use strict';
+$(function() {
 
+    let Calendare = {
+        start_year: 1919,
+        year_interval: 200,
+        days: function (month, year) {
+            let _days = [];
+            let dateObjCurrent = new Date(year, month, 1),
+                _yearCurrent = dateObjCurrent.getFullYear(),
+                _monthCurrent = dateObjCurrent.getMonth(),
+                _wdayCurrent = dateObjCurrent.getDay(),
+                _lastDayCurrent = 32 - new Date(_yearCurrent, _monthCurrent, 32).getDate();
+            let dateObjPrev = new Date(year, month-1, 1),
+                _yearPrev = dateObjPrev.getFullYear(),
+                _monthPrev = dateObjPrev.getMonth(),
+                _lastDayPrev = 32 - new Date(_yearPrev, _monthPrev, 32).getDate();
+            let dateObjFollow = new Date(year, month+1, 1),
+                _yearFollow = dateObjFollow.getFullYear(),
+                _monthFollow = dateObjFollow.getMonth();
+            let d,d1,m,y;
 
-class MyCalendar {
-    constructor(startDate) {
-        this.startDate = startDate;
-        this.year = this.startDate.getFullYear();
-        this.month = this.startDate.getMonth();
-        this.day = this.startDate.getDate();
-        this.wday = this.startDate.getDay();
-        this.first_day = new Date(this.year,this.month,1);
-        this.first_wday = this.first_day.getDay();
-        this.last_day = 32 - new Date(this.year,this.month,32).getDate();
-    };
-}
+            if (_wdayCurrent === 0) {
+                _wdayCurrent = 7;
+            }
 
-class BilderTable {
-    constructor(MyCal_prev, MyCal_curr) {
-        this.MyCal0 = MyCal_prev;
-        this.MyCal1 = MyCal_curr;
-    }
-    createTable (index){
-        let day_table = document.getElementsByClassName("table" + index)[0];
-        let last_prev = this.MyCal0.last_day;
-
-        let first_wday = this.MyCal1.first_wday;
-        if (first_wday === 0) {first_wday=7;}
-
-        let last_curr = this.MyCal1.last_day;
-
-        let MyTable = "<caption>" + this.MyCal1.day + "." + this.MyCal1.month + "." + this.MyCal1.year + "</caption>";
-
-        MyTable += "<tr class='weekday'><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr>";
-
-        let a = 2-first_wday;
-        let b = 0;
-
-        for (let i = 0; i < 6; i++) {
-            MyTable += "<tr>";
-            for (let j = 0; j < 7; j++) {
-                if (a < 1) {
-                    b = last_prev + a;
-                    MyTable += "<td class='not_current'>" + b + "</td>";
-                    a++;
-                } else if (a > last_curr) {
-                    b = a - last_curr;
-                    MyTable += "<td class='not_current'>" + b + "</td>";
-                    a++;
+            let _day = 2 - _wdayCurrent;
+            for (let i = 0; i < 42; i++) {
+                if (_day < 1) {
+                    d1 = (_lastDayPrev + _day);
+                    d = d1 < 10 ? '0' + d1: d1;
+                    m = _monthPrev < 9 ? '0' + (_monthPrev + 1) : _monthPrev + 1;
+                    y = _yearPrev;
+                    _days[i] = '<div class="cells prev" ' +
+                        'data-date="' + d1 + '" ' +
+                        'data-month="' + _monthPrev + '" ' +
+                        'data-year="' + _yearPrev + '" ' +
+                        'data-fulldate="' + d + '.' + m + '.' + y + '">' + d1 + '</div>';
+                    _day++;
+                } else if (_day > _lastDayCurrent) {
+                    d1 = (_day - _lastDayCurrent);
+                    d = d1 < 10 ? '0' + d1: d1;
+                    m = _monthFollow < 9 ? '0' + (_monthFollow + 1) : _monthFollow + 1;
+                    y = _yearFollow;
+                    _days[i] = '<div class="cells foll" ' +
+                        'data-date="' + d1 + '" ' +
+                        'data-month="' + _monthFollow  + '" ' +
+                        'data-year="' + _yearFollow + '" ' +
+                        'data-fulldate="' + d + '.' + m + '.' + y + '">' + d1 + '</div>';
+                    _day++;
                 } else {
-                    MyTable += "<td class='current'>" + a + "</td>";
-                    a++;
+                    d1 = _day;
+                    d = _day < 10 ? '0' + _day : _day;
+                    m = _monthCurrent < 9 ? '0' + (_monthCurrent + 1) : _monthCurrent + 1;
+                    y = _yearCurrent;
+                    _days[i] = '<div class="cells curr" ' +
+                        'data-date="' + d1  + '" ' +
+                        'data-month="' + _monthCurrent + '" ' +
+                        'data-year="' + y + '" ' +
+                        'data-fulldate="' + d + '.' + m + '.' + y + '">' + d1 + '</div>';
+                    _day++;
                 }
             }
-            MyTable += "</tr>";
+            return _days;
+        },
+
+        months: function (kol_month, year) {
+            let arr_months = [];
+            for (let i = 0; i < kol_month; i++) {
+                arr_months[i] = this.days(i, year);
+            }
+            return arr_months;
+        },
+
+        years: function () {
+            let _years = [];
+            for (let i = this.start_year; i < this.start_year + this.year_interval; i++){
+                _years[i] = this.months(12, i);
+            }
+            return _years;
         }
-        day_table.innerHTML = MyTable;
+    };
+
+    /* Create Template HTML - Footer
+    @return void
+    @access private
+    */
+    /*       let html = function (el, views, CurrentDate) {
+               let C = Calendare.years();
+               let $el = $(el);
+               let el_div;
+               switch(views) {
+                   case 'year':
+                       _baseTemplateYAER (el,2017);
+
+                       break;
+                   case 'month':
+
+                       break;
+                   case 'days':
+
+                       break;
+                   default:
+                       break;
+               }
+           };
+   */
+    /* Create Template HTML - DAYS
+    @return void
+    @access private
+    */
+
+    let _baseTemplateDays = function (months) {
+        let $el = $("div.inner");
+        let days = months;
+        console.log (days);
+        let Head = "<div class='wday'>пн</div>" +
+            "<div class='wday'>вт</div>" +
+            "<div class='wday'>ср</div>" +
+            "<div class='wday'>чт</div>" +
+            "<div class='wday'>пт</div>" +
+            "<div class='wday weekday'>сб</div>" +
+            "<div class='wday weekday'>вс</div>" + "<br>";
+        $el.html(Head);
+        let el_div = '';
+        let a = 0;
+        for (let i = 0; i < 6; i++) {
+            el_div = '';
+            for (let j = 0; j < 7; j++) {
+                el_div += days[a++];
+            }
+            $el.append(el_div+'<br>');
+        }
+    };
+
+
+    let Year = Calendare.years();
+    let months = Year[2017];
+
+
+    let DateSelect1 = '';
+    let DateSelect2 = '';
+    let DateFlag = false;
+
+
+    _baseTemplateDays(months[0]);
+
+
+    let cells = $('.cells');
+
+
+    cells.on('click', function(e) {
+        let $el = $(e.target);
+        let year = $el.data("year");
+        let month = $el.data("month");
+        let date = $el.data("date");
+        let day = new Date (year, month, date);
+        if (DateFlag === false) {
+            $('.-DateSelect1-').removeClass('-DateSelect1-');
+            $('.-DateSelect2-').removeClass('-DateSelect2-');
+            $('.-focus-select-interval-').removeClass('-focus-select-interval-');
+            DateSelect1 = day;
+            $el.addClass('-select-');
+            DateFlag = true;
+        } else {
+            DateSelect2 = day;
+            if (DateSelect1 > DateSelect2) {
+                let a = DateSelect1;
+                DateSelect1 = DateSelect2;
+                DateSelect2 = a;
+                $('.-select-').addClass('-DateSelect2-').removeClass('-select-');
+                $el.addClass('-DateSelect1-');
+            } else  {
+                $('.-select-').addClass('-DateSelect1-').removeClass('-select-');
+                $el.addClass('-DateSelect2-');
+            }
+
+            $("input:text").val(DateSelect1.toLocaleDateString() + ' - ' + DateSelect2.toLocaleDateString());
+            SetFocusInterval(DateSelect1,DateSelect2,'-focus-select-interval-');
+            DateFlag = false;
+        }
+    });
+
+
+    cells.on('mousemove focus', function(e) {
+        let $el = $(e.target);
+        $el.addClass('-focus-');
+    });
+
+    cells.on('mouseout blur', function(e) {
+        $(e.target).removeClass('-focus-');
+        $('.-focus-select-').removeClass('-focus-select-');
+    });
+
+    cells.on('mouseover', function(e) {
+        let $el = $(e.target);
+        if (DateFlag) {
+
+            let year1 = DateSelect1.getFullYear();
+            let month1 = DateSelect1.getMonth();
+            let date1 = DateSelect1.getDate();
+
+            let year2 = $el.data("year");
+            let month2 = $el.data("month");
+            let date2 = $el.data("date");
+
+            let start = new Date(year1, month1, date1);
+            let end = new Date(year2, month2, date2);
+
+            if (end < start) {
+                SetFocusInterval(end, new Date(year1, month1, date1-1),'-focus-select-');
+            } else {
+                SetFocusInterval(start, new Date(year2, month2, date2-1),'-focus-select-');
+            }
+
+        }
+    });
+
+    let SetFocusInterval = function (start,end,myClass) {
+        let newDate, $newDate;
+        newDate = start;
+        while(newDate < end){
+            newDate = new Date(newDate.setDate(newDate.getDate() + 1));
+            $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
+                '][data-date=' + newDate.getDate() + ']');
+            $newDate.addClass(myClass);
+        }
     }
-/*  input_date (tab){
-        //day_table.innerHTML = MyTable;
-    }*/
-}
-function getValue () {
-    let Input_Date = document.getElementById("input_form").value; //let Input_Date = "2024, 09, 17";
-    get(Input_Date);
-}
-function get(Input_Date) {
 
-    let month_curr;
-    let month_prev;
-    if (Input_Date !== "") {
-        Input_Date = Input_Date.split("-").join(", ");
-        month_curr = new Date(Input_Date);
-        month_prev = new Date(Input_Date);
-    } else {
-        month_curr = new Date();
-        month_prev = new Date();
-        document.getElementById("input_form").value = month_curr.getFullYear() + "-" + month_curr.getMonth() +
-            "-" + month_curr.getDate();
-    }
-
-        month_prev.setMonth((month_prev.getMonth() - 1));
-
-        let MyCal_prev = new MyCalendar(month_prev);
-        let MyCal_curr = new MyCalendar(month_curr);
-
-
-
-        //let table1 = new BilderTable(MyCal_prev, MyCal_curr);
-    let tab = new BilderTable(MyCal_prev, MyCal_curr);
-
-          tab.createTable(1);
-}
-$(document).on('click', 'td', function(e) {
-    alert( "свойство: " + e);     //getValue(this.value);
 });
