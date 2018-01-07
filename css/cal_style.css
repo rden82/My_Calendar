@@ -5,6 +5,22 @@ body {
 div.wday  {
     background: gray;
     color: white;}
+div.btn_left, div.btn_right {
+    width: 30px;}
+div.name-date {
+    width: 205px;}
+div.btn_left, div.btn_right, div.name-date {
+    background: gray;
+    color: black;
+    display: inline-table;
+    flex-wrap: wrap;
+    padding: 5px;
+    border: 2px groove lightgray;
+    text-align: center;
+    cursor: pointer;}
+div.wday  {
+    background: gray;
+    color: white;}
 div.wday.weekday  {
     background: black;
     color: white;}
@@ -13,7 +29,7 @@ div.cells, div.wday {
     width: 30px;
     flex-wrap: wrap;
     padding: 5px;
-    border: 4px groove lightgray;
+    border: 2px groove lightgray;
     text-align: center;}
 div.cells.prev, div.cells.foll {
     background: lightgrey;
@@ -43,3 +59,6 @@ div.cells.-focus-select- {
 div.cells.-focus-select-interval- {
     background: orange;
     color: black;}
+div.cells.-current-date- {;
+    color: green;
+    background: yellow;}
