@@ -4,9 +4,9 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
     let Calendar = {
         start_year: 1919,
         year_interval: 200,
-    /*
-    Create Days: return <div> for all day of select month
-    */
+        /*
+        Create Days: return <div> for all day of select month
+        */
         days: function (month, year) {
             let _days = [];
             let dateObjCurrent = new Date(year, month, 1),
@@ -66,9 +66,9 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
             }
             return _days;
         },
-    /*
-    Create Months: return array of month for select Year
-    */
+        /*
+        Create Months: return array of month for select Year
+        */
         months: function (kol_month, year) {
             let arr_months = [];
             for (let i = 0; i < kol_month; i++) {
@@ -76,9 +76,9 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
             }
             return arr_months;
         },
-    /*
-    Create Years: return array of years for the specified interval
-    */
+        /*
+        Create Years: return array of years for the specified interval
+        */
         years: function () {
             let _years = [];
             for (let i = this.start_year; i < this.start_year + this.year_interval; i++) {
@@ -88,19 +88,19 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
         }
     };
 
-let Year = Calendar.years();
-let TempDate = new Date();
-let $call_cells;
+    let Year = Calendar.years();
+    let TempDate = new Date();
+    let $call_cells;
 
-let DateSelect1 = '';
-let DateSelect2 = '';
-let DateFlag = false;
+    let DateSelect1 = '';
+    let DateSelect2 = '';
+    let DateFlag = false;
 
-let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
     let _baseTemplateDays = function (months) {
         let $name_date = $("div.name-date");
-        $name_date.text( nameMonths[TempDate.getMonth()] + ' ' + TempDate.getFullYear() );
+        $name_date.text(nameMonths[TempDate.getMonth()] + ' ' + TempDate.getFullYear());
         $call_cells = $("div.call_cells");
         $call_cells.html('');
         let days = months;
@@ -113,49 +113,78 @@ let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
             }
             $call_cells.append(el_div + '<br>');
         }
+
     };
-
-
-
-    let SetFocusInterval = function (start, end, myClass) {
-        let newDate, $newDate;
-        newDate = start;
-        while (newDate < end) {
-            newDate = new Date(newDate.setDate(newDate.getDate() + 1));
-            $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
-                '][data-date=' + newDate.getDate() + ']');
-            $newDate.addClass(myClass);
-        }
-    };
-
-    /* Create Template HTML - Footer
-    */
-    function getHTML (views, step) {
+//Add Class current-day
+function CurrentDate() {
+    let newDate = new Date();
+    let $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
+        '][data-date=' + newDate.getDate() + ']');
+    $newDate.addClass('-current-date-');
+}
+//Add Class DateSelect1
+function AddSelectDate1() {
+    if (DateSelect1) {
+        let $newDate = $('[data-year=' + DateSelect1.getFullYear() + '][data-month=' + DateSelect1.getMonth() +
+            '][data-date=' + DateSelect1.getDate() + ']');
+        if (DateFlag === true) {
+            $newDate.addClass('-select-');
+        } else $newDate.addClass('-DateSelect1-');
+    }
+}
+//Add Class DateSelect2
+function AddSelectDate2() {
+    if (DateSelect2 && !DateFlag) {
+        let $newDate = $('[data-year=' + DateSelect2.getFullYear() + '][data-month=' + DateSelect2.getMonth() +
+            '][data-date=' + DateSelect2.getDate() + ']');
+        $newDate.addClass('-DateSelect2-');
+    }
+}
+// Add Class to auto select interval from SelectDate1 to current element
+function SetFocusInterval (startDate, endDate, myClass) {
+    let $newDate;
+    let newDate = startDate;
+    if (newDate < endDate) {
+        newDate = new Date(newDate.setDate(newDate.getDate()));
+    }
+    while (newDate < endDate) {
+        newDate = new Date(newDate.setDate(newDate.getDate() + 1));
+        $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
+            '][data-date=' + newDate.getDate() + ']');
+        $newDate.addClass(myClass);
+    }
+}
+//  _baseTemplateDays for months+step
+    function getHTML(views, step) {
         let day = TempDate.getDate();
-        let month = TempDate.getMonth() + step ;
+        let month = TempDate.getMonth() + step;
         let year = TempDate.getFullYear();
-        TempDate = new Date (year, month, day);
-        month = TempDate.getMonth() ;
+        TempDate = new Date(year, month, day);
+        month = TempDate.getMonth();
         year = TempDate.getFullYear();
 
         let months = Year[year];
-        switch(views) {
+        switch (views) {
             case 'year':
                 break;
             case 'month':
                 break;
             case 'days':
                 _baseTemplateDays(months[month]);
-
+                CurrentDate();
+                AddSelectDate1();
+                AddSelectDate2();
+                SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
                 break;
             default:
                 break;
         }
     }
 
-
+// JQuery function
     $(() => {
-        (function _baseTemplateHead () {
+// Create Template HTML
+        (function _baseTemplateHead() {
             let $el = $("div.inner");
             let Head = "<div class='button btn_left'>&#9664</div>" +
                 "<div class='name-date'>day.month.year</div><div class='button btn_right'>&#9654;</div>" +
@@ -169,17 +198,10 @@ let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
                 "<div class='wday weekday'>вс</div>" + "<br>" +
                 "<div class='call_cells'>пн</div>";
             $el.html(Head);
+            getHTML('days', 0);
         })();
 
-        getHTML('days', 0);
-
-        $(document).ready(function() {
-            let newDate = new Date();
-            let $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
-                '][data-date=' + newDate.getDate() + ']');
-            $newDate.addClass('-current-date-');
-        });
-
+//Click on  to current element
         $call_cells.on('click', 'div', function () {
             let $el = $(this);
             let year = $el.data("year");
@@ -211,17 +233,17 @@ let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
                 DateFlag = false;
             }
         });
-
-        $call_cells.on('mousemove focus', 'div',  function (event) {
+//Add Focus to current element
+        $call_cells.on('mousemove focus', 'div', function (event) {
             let $el = $(event.target);
             $el.addClass('-focus-');
         });
-
+//Remove Focus from current element
         $call_cells.on('mouseout blur', 'div', function (event) {
             $(event.target).removeClass('-focus-');
             $('.-focus-select-').removeClass('-focus-select-');
         });
-
+//Select interval from DsteSelect1 to current elemets
         $call_cells.on('mouseover', 'div', function (event) {
             let $el = $(event.target);
             if (DateFlag) {
@@ -244,8 +266,7 @@ let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
                 }
             }
         });
-
-        //Click on <button class="butt_right">
+//Click on <button class="butt_right">
         $('.btn_left').on('click', function () {
             getHTML('days', -1);
         });
@@ -253,5 +274,4 @@ let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July'
         $('.btn_right').on('click', function () {
             getHTML('days', +1);
         });
-
-   });
+    });
