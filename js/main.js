@@ -94,10 +94,12 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
 
     let DateSelect1 = '';
     let DateSelect2 = '';
-    let DateFlag = false;
+    let DateFlag1 = false;
 
     let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+    // JQuery function
+$(() => {
     let _baseTemplateDays = function (months) {
         let $name_date = $("div.name-date");
         $name_date.text(nameMonths[TempDate.getMonth()] + ' ' + TempDate.getFullYear());
@@ -115,38 +117,42 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
         }
 
     };
-//Add Class current-day
+//Add CSS Class current-day
 function CurrentDate() {
     let newDate = new Date();
     let $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
         '][data-date=' + newDate.getDate() + ']');
     $newDate.addClass('-current-date-');
 }
-//Add Class DateSelect1
+//Add CSS Class DateSelect1
 function AddSelectDate1() {
     if (DateSelect1) {
         let $newDate = $('[data-year=' + DateSelect1.getFullYear() + '][data-month=' + DateSelect1.getMonth() +
             '][data-date=' + DateSelect1.getDate() + ']');
-        if (DateFlag === true) {
+        if (DateFlag1 === true) {
             $newDate.addClass('-select-');
         } else $newDate.addClass('-DateSelect1-');
     }
 }
-//Add Class DateSelect2
+//Add CSS Class DateSelect2
 function AddSelectDate2() {
-    if (DateSelect2 && !DateFlag) {
+    if (DateSelect2 && !DateFlag1) {
         let $newDate = $('[data-year=' + DateSelect2.getFullYear() + '][data-month=' + DateSelect2.getMonth() +
             '][data-date=' + DateSelect2.getDate() + ']');
         $newDate.addClass('-DateSelect2-');
     }
 }
+//Delete CSS Class DateSelect* and focus-select-interval
+function DeleteSelection() {
+    $('.-DateSelect1-').removeClass('-DateSelect1-');
+    $('.-DateSelect2-').removeClass('-DateSelect2-');
+    $('.-focus-select-interval-').removeClass('-focus-select-interval-');
+}
 // Add Class to auto select interval from SelectDate1 to current element
 function SetFocusInterval (startDate, endDate, myClass) {
     let $newDate;
     let newDate = startDate;
-    if (newDate < endDate) {
-        newDate = new Date(newDate.setDate(newDate.getDate()));
-    }
+    newDate = new Date(newDate);
     while (newDate < endDate) {
         newDate = new Date(newDate.setDate(newDate.getDate() + 1));
         $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
@@ -174,15 +180,16 @@ function SetFocusInterval (startDate, endDate, myClass) {
                 CurrentDate();
                 AddSelectDate1();
                 AddSelectDate2();
-                SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
+                if (DateFlag1 === false) {
+                    SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
+                }
                 break;
             default:
                 break;
         }
     }
 
-// JQuery function
-    $(() => {
+
 // Create Template HTML
         (function _baseTemplateHead() {
             let $el = $("div.inner");
@@ -202,21 +209,21 @@ function SetFocusInterval (startDate, endDate, myClass) {
         })();
 
 //Click on  to current element
-        $call_cells.on('click', 'div', function () {
-            let $el = $(this);
+        $call_cells.on('click', 'div', function (event) {
+            let $el = $(event.target);
             let year = $el.data("year");
             let month = $el.data("month");
             let date = $el.data("date");
             let day = new Date(year, month, date);
-            if (DateFlag === false) {
-                $('.-DateSelect1-').removeClass('-DateSelect1-');
-                $('.-DateSelect2-').removeClass('-DateSelect2-');
-                $('.-focus-select-interval-').removeClass('-focus-select-interval-');
+
+            if (DateFlag1 === false) {
+                DeleteSelection();
                 DateSelect1 = day;
+                DateFlag1 = true;
                 $el.addClass('-select-');
-                DateFlag = true;
             } else {
                 DateSelect2 = day;
+
                 if (DateSelect1 > DateSelect2) {
                     let a = DateSelect1;
                     DateSelect1 = DateSelect2;
@@ -230,7 +237,7 @@ function SetFocusInterval (startDate, endDate, myClass) {
 
                 $("input:text").val(DateSelect1.toLocaleDateString() + ' - ' + DateSelect2.toLocaleDateString());
                 SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
-                DateFlag = false;
+                DateFlag1 = false;
             }
         });
 //Add Focus to current element
@@ -246,7 +253,7 @@ function SetFocusInterval (startDate, endDate, myClass) {
 //Select interval from DsteSelect1 to current elemets
         $call_cells.on('mouseover', 'div', function (event) {
             let $el = $(event.target);
-            if (DateFlag) {
+            if (DateFlag1) {
 
                 let year1 = DateSelect1.getFullYear();
                 let month1 = DateSelect1.getMonth();
