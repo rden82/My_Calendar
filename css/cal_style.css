@@ -1,10 +1,15 @@
 body {
     padding: 50px;}
-#Month {
-    background: azure;}
-div.wday  {
-    background: gray;
-    color: white;}
+
+div  {
+    /** Для эксплорера */
+    -ms-user-select: none;
+    /** Для мозилы */
+    -moz-user-select: none;
+    /** Для конкверора */
+    -khtml-user-select: none;
+    /**Для Сафари и Хрома */
+    -webkit-user-select: none;}
 div.btn_left, div.btn_right {
     width: 30px;}
 div.name-date {
@@ -41,6 +46,10 @@ div.cells.-focus- {
     background: black;
     color: white;
     cursor: pointer;}
+div.months.-focus- {
+    background: black;
+    color: white;
+    cursor: pointer;}
 div.cells.-DateSelect1- {
     background: greenyellow;
     color: black;
@@ -58,6 +67,18 @@ div.cells.-focus-select- {
 div.cells.-focus-select-interval- {
     background: orange;
     color: black;}
-div.cells.-current-date- {;
+div.cells.-current-date- {
     color: green;
     background: yellow;}
+div.months.-current-month- {
+    color: green;
+    background: yellow;}
+div.months {
+    display: inline-table;
+    flex-wrap: wrap;
+    padding: 5px;
+    border: 2px groove lightgray;
+    text-align: center;
+    width: 63px;
+    font-size: small;
+}
