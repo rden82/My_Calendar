@@ -39,6 +39,9 @@ div.cells, div.wday {
 div.cells.prev, div.cells.foll {
     background: lightgrey;
     color: darkgrey;}
+div.months.foll {
+    background: lightgrey;
+    color: darkgrey;}
 div.cells.curr {
     background: azure;
     font-weight: bold;}

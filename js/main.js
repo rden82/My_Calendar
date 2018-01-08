@@ -143,15 +143,17 @@ $(() => {
         $call_cells.html('');
         let el_div = '';
         let a = 0;
+        let mon = 'curr';
         for (let i = 0; i < 4; i++) {
             el_div = '';
             for (let j = 0; j < 4; j++) {
-                el_div += '<div class="months" data-year="' + y + '" data-month="' + a + '">' + nameMonths[a++] + '</div>';
+                el_div += '<div class="months ' +  mon + '" data-year="' + y + '" data-month="' + a + '">' + nameMonths[a++] + '</div>';
             }
             $call_cells.append(el_div + '<br>');
             if (a > 11) {
                 ++y;
                 a = 0;
+                mon = 'foll';
             }
         }
     };
