@@ -108,6 +108,7 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
     let DateSelect1 = '';
     let DateSelect2 = '';
     let DateFlag1 = false;
+    let MonthFlag = false;
 
     let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -205,20 +206,21 @@ function SetFocusInterval (startDate, endDate, myClass) {
 }
 //  _baseTemplateDays for months+step
     function getHTML(views, step) {
-        TempDate =  new Date(TempDate.setMonth(TempDate.getMonth() + step));
-
-        let month = TempDate.getMonth();
-        let year = TempDate.getFullYear();
-
-        let months = Year[year];
         switch (views) {
             case 'year':
                 break;
             case 'month':
+                TempDate =  new Date(TempDate.setFullYear(TempDate.getFullYear() + step));
                 _baseTemplateMonths();
                 CurrentMonth();
+                MonthFlag = true;
                 break;
             case 'days':
+                TempDate =  new Date(TempDate.setMonth(TempDate.getMonth() + step));
+                let month = TempDate.getMonth();
+                let year = TempDate.getFullYear();
+                let months = Year[year];
+
                 $call_cells = $("div.call_cells");
                 _baseTemplateDays(months[month]);
                 CurrentDate();
@@ -227,6 +229,7 @@ function SetFocusInterval (startDate, endDate, myClass) {
                 if (DateFlag1 === false) {
                     SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
                 }
+                MonthFlag = false;
                 break;
             default:
                 break;
@@ -322,11 +325,17 @@ function SetFocusInterval (startDate, endDate, myClass) {
 
 //Click on <button class="butt_right">
         $('.btn_left').on('click', function () {
-            getHTML('days', -1);
+            if (MonthFlag) { getHTML('month', -1)
+            } else {
+                getHTML('days', -1);
+            }
         });
 //Click on <button class="butt_right">
         $('.btn_right').on('click', function () {
-            getHTML('days', +1);
+            if (MonthFlag) { getHTML('month', +1)
+            } else {
+                getHTML('days', +1);
+            }
         });
 
 });
