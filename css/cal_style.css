@@ -54,7 +54,7 @@ div.months.-focus- {
     color: white;
     cursor: pointer;}
 div.cells.-DateSelect1- {
-    background: greenyellow;
+    background: greenyellow !important;
     color: black;
     border-radius: 10px 0 0 10px;}
 div.cells.-DateSelect2- {
@@ -62,7 +62,7 @@ div.cells.-DateSelect2- {
     color: black ;
     border-radius: 0 10px 10px 0;}
 div.cells.-select- {
-    background: greenyellow;
+    background: greenyellow !important;
     color: black; }
 div.cells.-focus-select- {
     background: orange;
