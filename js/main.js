@@ -1,126 +1,343 @@
-'use strict';
+/*
+Singleton - Bilder: create Year[] -> Month[] -> Days
+*/
+    let Calendar = {
+        start_year: 1919,
+        year_interval: 200,
+        /*
+        Create Days: return <div> for all day of select month
+        */
+        days: function (month, year) {
+            let _days = [];
+            let dateObjCurrent = new Date(year, month, 1),
+                _yearCurrent = dateObjCurrent.getFullYear(),
+                _monthCurrent = dateObjCurrent.getMonth(),
+                _wdayCurrent = dateObjCurrent.getDay(),
+                _lastDayCurrent = 32 - new Date(_yearCurrent, _monthCurrent, 32).getDate();
+            let dateObjPrev = new Date(year, month - 1, 1),
+                _yearPrev = dateObjPrev.getFullYear(),
+                _monthPrev = dateObjPrev.getMonth(),
+                _lastDayPrev = 32 - new Date(_yearPrev, _monthPrev, 32).getDate();
+            let dateObjFollow = new Date(year, month + 1, 1),
+                _yearFollow = dateObjFollow.getFullYear(),
+                _monthFollow = dateObjFollow.getMonth();
+            let d, d1, m, y;
 
+            if (_wdayCurrent === 0) {
+                _wdayCurrent = 7;
+            }
 
-class MyCalendar {
-    constructor(startDate) {
-        this.startDate = startDate;
-        this.year = this.startDate.getFullYear();
-        this.month = this.startDate.getMonth();
-        this.day = this.startDate.getDate();
-        this.wday = this.startDate.getDay();
-        this.first_day = new Date(this.year,this.month,1);
-        this.first_wday = this.first_day.getDay();
-        this.last_day = 32 - new Date(this.year,this.month,32).getDate();
-    };
-}
-
-class BilderTable {
-    constructor(MyCal_prev, MyCal_curr) {
-        this.MyCal0 = MyCal_prev;
-        this.MyCal1 = MyCal_curr;
-    }
-    createTable (index){
-        let day_table = document.getElementsByClassName("table" + index)[0];
-        let last_prev = this.MyCal0.last_day;
-
-        let first_wday = this.MyCal1.first_wday;
-        if (first_wday === 0) {first_wday=7;}
-
-        let last_curr = this.MyCal1.last_day;
-
-        let MyTable = "<caption>" + this.MyCal1.day + "." + (this.MyCal1.month + 1) + "." + this.MyCal1.year + "</caption>";
-
-        MyTable += "<tr class='weekday'><th>пн</th><th>вт</th><th>ср</th><th>чт</th><th>пт</th><th>сб</th><th>вс</th></tr>";
-
-        let a = 2-first_wday;
-        let b = 0;
-
-        for (let i = 0; i < 6; i++) {
-            MyTable += "<tr>";
-            for (let j = 0; j < 7; j++) {
-                if (a < 1) {
-                    b = last_prev + a;
-                    MyTable += "<td class='not_current'>" + b + "</td>";
-                    a++;
-                } else if (a > last_curr) {
-                    b = a - last_curr;
-                    MyTable += "<td class='not_current'>" + b + "</td>";
-                    a++;
+            let _day = 2 - _wdayCurrent;
+            for (let i = 0; i < 42; i++) {
+                if (_day < 1) {
+                    d1 = (_lastDayPrev + _day);
+                    d = d1 < 10 ? '0' + d1 : d1;
+                    m = _monthPrev < 9 ? '0' + (_monthPrev + 1) : _monthPrev + 1;
+                    y = _yearPrev;
+                    _days[i] = '<div class="cells prev" ' +
+                        'data-date="' + d1 + '" ' +
+                        'data-month="' + _monthPrev + '" ' +
+                        'data-year="' + _yearPrev + '" ' +
+                        'data-fulldate="' + d + '.' + m + '.' + y + '">' + d1 + '</div>';
+                    _day++;
+                } else if (_day > _lastDayCurrent) {
+                    d1 = (_day - _lastDayCurrent);
+                    d = d1 < 10 ? '0' + d1 : d1;
+                    m = _monthFollow < 9 ? '0' + (_monthFollow + 1) : _monthFollow + 1;
+                    y = _yearFollow;
+                    _days[i] = '<div class="cells foll" ' +
+                        'data-date="' + d1 + '" ' +
+                        'data-month="' + _monthFollow + '" ' +
+                        'data-year="' + _yearFollow + '" ' +
+                        'data-fulldate="' + d + '.' + m + '.' + y + '">' + d1 + '</div>';
+                    _day++;
                 } else {
-                    MyTable += "<td class='current'>" + a + "</td>";
-                    a++;
+                    d1 = _day;
+                    d = _day < 10 ? '0' + _day : _day;
+                    m = _monthCurrent < 9 ? '0' + (_monthCurrent + 1) : _monthCurrent + 1;
+                    y = _yearCurrent;
+                    _days[i] = '<div class="cells curr" ' +
+                        'data-date="' + d1 + '" ' +
+                        'data-month="' + _monthCurrent + '" ' +
+                        'data-year="' + y + '" ' +
+                        'data-fulldate="' + d + '.' + m + '.' + y + '">' + d1 + '</div>';
+                    _day++;
                 }
             }
-            MyTable += "</tr>";
+            return _days;
+        },
+        /*
+        Create Months: return array of month for select Year
+        */
+        months: function (kol_month, year) {
+            let arr_months = [];
+            for (let i = 0; i < kol_month; i++) {
+                arr_months[i] = this.days(i, year);
+            }
+            return arr_months;
+        },
+        /*
+        Create Years: return array of years for the specified interval
+        */
+        years: function () {
+            let _years = [];
+            for (let i = this.start_year; i < this.start_year + this.year_interval; i++) {
+                _years[i] = this.months(12, i);
+            }
+            return _years;
         }
-        day_table.innerHTML = MyTable;
-    }
-/*  input_date (tab){
-        //day_table.innerHTML = MyTable;
-    }*/
-}
+    };
 
-function getValue (step) {
-    let Input_Date = document.getElementById("input_form").value; //let Input_Date = "2024, 09, 17";
-    let kk;
-    if (Input_Date === "") {
-        Input_Date = new Date(); //let Input_Date = "2024-09-17";
-        kk=Input_Date.getMonth();
-        if (kk<10) {kk="0"+kk.toString()};
-        Input_Date = Input_Date.getFullYear() + "-" + Input_Date.getMonth() + "-" + Input_Date.getDate();
-        document.getElementById("input_form").value = Input_Date.getFullYear() + "-" + kk + "-" + Input_Date.getDate();
-    }
+    let Year = Calendar.years();
+    const  TemplateHead = "<div class='button btn_left'>&#9664</div>" +
+    "<div class='name-date'>day.month.year</div><div class='button btn_right'>&#9654;</div>" +
+        "<br>" + "<div class='name-wday'></div>";
+    const  TemplateWeek =
+        "<div class='wday'>пн</div>" +
+        "<div class='wday'>вт</div>" +
+        "<div class='wday'>ср</div>" +
+        "<div class='wday'>чт</div>" +
+        "<div class='wday'>пт</div>" +
+        "<div class='wday weekday'>сб</div>" +
+        "<div class='wday weekday'>вс</div>" + "<br>";
+    const  TemplateDay = "<div class='call_cells'>days of month</div>";
 
-    if (step !== undefined) {
-        let Arr = Input_Date.split("-");
-        Arr[1] = +Arr[1] + step;
+    let TempDate = new Date();
+    let $call_cells;
 
-        if (+Arr[1] > 12) {
-            Arr[1] = "01";
-            Arr[0] = +Arr[0] + 1;
+    let DateSelect1 = '';
+    let DateSelect2 = '';
+    let DateFlag1 = false;
+    let MonthFlag = false;
+
+    let nameMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+//
+$(() => {
+
+//Create Days
+    let _baseTemplateDays = function (months) {
+        let $name_date = $("div.name-date");
+        let $name_wday =$("div.name-wday");
+        $name_date.text(nameMonths[TempDate.getMonth()] + ' ' + TempDate.getFullYear());
+        $name_wday.html(TemplateWeek);
+        $call_cells.html('');
+        let days = months;
+        let el_div = '';
+        let a = 0;
+        for (let i = 0; i < 6; i++) {
+            el_div = '';
+            for (let j = 0; j < 7; j++) {
+                el_div += days[a++];
+            }
+            $call_cells.append(el_div + '<br>');
         }
-        if (+Arr[1] < 1) {
-            Arr[1] = 12;
-            Arr[0] = +Arr[0] - 1;
+    };
+//Create Months
+    let _baseTemplateMonths = function () {
+        let $name_date = $("div.name-date");
+        let $name_wday =$("div.name-wday");
+        $name_wday.html('');
+        let y = TempDate.getFullYear();
+        $name_date.text(y);
+        $call_cells.html('');
+        let el_div = '';
+        let a = 0;
+        let mon = 'curr';
+        for (let i = 0; i < 4; i++) {
+            el_div = '';
+            for (let j = 0; j < 4; j++) {
+                el_div += '<div class="months ' +  mon + '" data-year="' + y + '" data-month="' + a + '">' + nameMonths[a++] + '</div>';
+            }
+            $call_cells.append(el_div + '<br>');
+            if (a > 11) {
+                ++y;
+                a = 0;
+                mon = 'foll';
+            }
         }
-        Input_Date = Arr.join("-");
+    };
+//Add CSS Class current-day
+function CurrentDate() {
+    let newDate = new Date();
+    let $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
+        '][data-date=' + newDate.getDate() + ']');
+    $newDate.addClass('-current-date-');
+}
+//Add CSS Class current-month
+function CurrentMonth() {
+    let newDate = new Date();
+    let $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() + ']');
+    $newDate.addClass('-current-month-');
+}
+//Add CSS Class DateSelect1
+function AddSelectDate1() {
+    if (DateSelect1) {
+        let $newDate = $('[data-year=' + DateSelect1.getFullYear() + '][data-month=' + DateSelect1.getMonth() +
+            '][data-date=' + DateSelect1.getDate() + ']');
+        if (DateFlag1 === true) {
+            $newDate.addClass('-select-');
+        } else $newDate.addClass('-DateSelect1-');
     }
-    Input_Date = Input_Date.split("-").join(", ");
-    get(Input_Date);
-
-    kk=Input_Date.split(", ");
-    if (kk[1] < 10) { kk[1] = "0" + kk[1].toString() };
-    document.getElementById("input_form").value =kk.join("-");
 }
-
-function get(Input_Date) {
-
-    let month_curr;
-    let month_prev;
-
-    Input_Date = Input_Date.split("-").join(", ");
-    month_curr = new Date(Input_Date);
-    month_prev = new Date(Input_Date);
-
-    month_prev.setMonth((month_prev.getMonth() - 1));
-
-    let MyCal_prev = new MyCalendar(month_prev);
-    let MyCal_curr = new MyCalendar(month_curr);
-
-        //let table1 = new BilderTable(MyCal_prev, MyCal_curr);
-    let tab = new BilderTable(MyCal_prev, MyCal_curr);
-
-          tab.createTable(1);
+//Add CSS Class DateSelect2
+function AddSelectDate2() {
+    if (DateSelect2 && !DateFlag1) {
+        let $newDate = $('[data-year=' + DateSelect2.getFullYear() + '][data-month=' + DateSelect2.getMonth() +
+            '][data-date=' + DateSelect2.getDate() + ']');
+        $newDate.addClass('-DateSelect2-');
+    }
 }
-//Click on <td>
-$(document).on('click', 'td', function(e) {
-    alert( "свойство: " + e);     //getValue(this.value);
-});
-//Click on <button class="butt_left">
-$('.butt_left').click(function(){
-    getValue(-1);
-});
+//Delete CSS Class DateSelect* and focus-select-interval
+function DeleteSelection() {
+    $('.-DateSelect1-').removeClass('-DateSelect1-');
+    $('.-DateSelect2-').removeClass('-DateSelect2-');
+    $('.-focus-select-interval-').removeClass('-focus-select-interval-');
+}
+// Add Class to auto select interval from SelectDate1 to current element
+function SetFocusInterval (startDate, endDate, myClass) {
+    let $newDate;
+    let newDate = startDate;
+    newDate = new Date(newDate);
+    while (newDate < endDate) {
+        newDate = new Date(newDate.setDate(newDate.getDate() + 1));
+        $newDate = $('[data-year=' + newDate.getFullYear() + '][data-month=' + newDate.getMonth() +
+            '][data-date=' + newDate.getDate() + ']');
+        $newDate.addClass(myClass);
+    }
+}
+//  _baseTemplateDays for months+step
+    function getHTML(views, step) {
+        switch (views) {
+            case 'year':
+                break;
+            case 'month':
+                TempDate =  new Date(TempDate.setFullYear(TempDate.getFullYear() + step));
+                _baseTemplateMonths();
+                CurrentMonth();
+                MonthFlag = true;
+                break;
+            case 'days':
+                TempDate =  new Date(TempDate.setMonth(TempDate.getMonth() + step));
+                let month = TempDate.getMonth();
+                let year = TempDate.getFullYear();
+                let months = Year[year];
+
+                $call_cells = $("div.call_cells");
+                _baseTemplateDays(months[month]);
+                CurrentDate();
+                AddSelectDate1();
+                AddSelectDate2();
+                if (DateFlag1 === false) {
+                    SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
+                }
+                MonthFlag = false;
+                break;
+            default:
+                break;
+        }
+    }
+
+// Create Template HTML
+    (function _baseTemplateHead() {
+            let $el = $("div.inner");
+            $el.html(TemplateHead + TemplateDay);
+            getHTML('days', 0);
+    })();
+
+//Click on  to current element
+        $call_cells.on('click', 'div.cells', function (event) {
+            let $el = $(event.target);
+            let year = $el.data("year");
+            let month = $el.data("month");
+            let date = $el.data("date");
+            let day = new Date(year, month, date);
+
+            if (DateFlag1 === false) {
+                DeleteSelection();
+                DateSelect1 = day;
+                DateFlag1 = true;
+                $el.addClass('-select-');
+            } else {
+                DateSelect2 = day;
+
+                if (DateSelect1 > DateSelect2) {
+                    let a = DateSelect1;
+                    DateSelect1 = DateSelect2;
+                    DateSelect2 = a;
+                    $('.-select-').addClass('-DateSelect2-').removeClass('-select-');
+                    $el.addClass('-DateSelect1-');
+                } else {
+                    $('.-select-').addClass('-DateSelect1-').removeClass('-select-');
+                    $el.addClass('-DateSelect2-');
+                }
+
+                $("input:text").val(DateSelect1.toLocaleDateString() + ' - ' + DateSelect2.toLocaleDateString());
+                SetFocusInterval(DateSelect1, DateSelect2, '-focus-select-interval-');
+                DateFlag1 = false;
+            }
+        });
+//Click on  to current element
+    $call_cells.on('click', 'div.months', function (event) {
+        let $el = $(event.target);
+        let year = $el.data("year");
+        let month = $el.data("month");
+        TempDate = new Date(year, month, 1);
+        getHTML('days', 0);
+    });
+
+//Add Focus to current element
+        $call_cells.on('mousemove focus', 'div', function (event) {
+            let $el = $(event.target);
+            $el.addClass('-focus-');
+        });
+//Remove Focus from current element
+        $call_cells.on('mouseout blur', 'div', function (event) {
+            $(event.target).removeClass('-focus-');
+            $('.-focus-select-').removeClass('-focus-select-');
+        });
+//Select interval from DsteSelect1 to current elemets
+        $call_cells.on('mouseover', 'div', function (event) {
+            let $el = $(event.target);
+            if (DateFlag1) {
+
+                let year1 = DateSelect1.getFullYear();
+                let month1 = DateSelect1.getMonth();
+                let date1 = DateSelect1.getDate();
+
+                let year2 = $el.data("year");
+                let month2 = $el.data("month");
+                let date2 = $el.data("date");
+
+                let start = new Date(year1, month1, date1);
+                let end = new Date(year2, month2, date2);
+
+                if (end < start) {
+                    SetFocusInterval(end, new Date(year1, month1, date1 - 1), '-focus-select-');
+                } else {
+                    SetFocusInterval(start, new Date(year2, month2, date2 - 1), '-focus-select-');
+                }
+            }
+        });
+//Select interval from DsteSelect1 to current elemets
+        $("div.name-date").on('click',  function () {
+            getHTML('month', 0);
+        });
+
+
 //Click on <button class="butt_right">
-$('.butt_right').click(function(){
-    getValue(+1);
+        $('.btn_left').on('click', function () {
+            if (MonthFlag) { getHTML('month', -1)
+            } else {
+                getHTML('days', -1);
+            }
+        });
+//Click on <button class="butt_right">
+        $('.btn_right').on('click', function () {
+            if (MonthFlag) { getHTML('month', +1)
+            } else {
+                getHTML('days', +1);
+            }
+        });
+
 });
