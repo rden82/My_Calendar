@@ -40,7 +40,7 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
                         'data-date="' + d1 + '" ' +
                         'data-month="' + _monthPrev + '" ' +
                         'data-year="' + _yearPrev + '" ' +
-                        'data-full_date="' + y + ',' + m + ',' + d + '">' + d1 + '</div>';
+                        'data-full_date="' + y + '-' + m + '-' + d + '">' + d1 + '</div>';
                     _day++;
                 } else if (_day > _lastDayCurrent) {
                     d1 = (_day - _lastDayCurrent);
@@ -51,7 +51,7 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
                         'data-date="' + d1 + '" ' +
                         'data-month="' + _monthFollow + '" ' +
                         'data-year="' + _yearFollow + '" ' +
-                        'data-full_date="' + y + ',' + m + ',' + d + '">' + d1 + '</div>';
+                        'data-full_date="' + y + '-' + m + '-' + d + '">' + d1 + '</div>';
                     _day++;
                 } else {
                     d1 = _day;
@@ -62,7 +62,7 @@ Singleton - Bilder: create Year[] -> Month[] -> Days
                         'data-date="' + d1 + '" ' +
                         'data-month="' + _monthCurrent + '" ' +
                         'data-year="' + y + '" ' +
-                        'data-full_date="' + y + ',' + m + ',' + d + '">' + d1 + '</div>';
+                        'data-full_date="' + y + '-' + m + '-' + d + '">' + d1 + '</div>';
                     _day++;
                 }
             }
