@@ -113,8 +113,7 @@ let DateSelect2 = '';
 let DateFlag1 = false;
 let MonthFlag = false;
 
-
-//
+//JQuery
 $(() => {
 
 //Create Days
